@@ -7,8 +7,8 @@ Python Tool to analyze kart and driver relative performance
 Instructions
 
 1) Create mysql DB (db=spk , user=[youruser], pass=[yourpass])
-2) Create mysql DB structure (**run blahblah.sql < **)
-3) Add drivers to be computed to table spk.drivers
+2) Create mysql DB structure (mysql -h mydatabasehost -u user -p passwd spk < mysql_db.sql)
+3) Add/Subtract drivers to be computed to table spk.drivers
 4) Change user/password in all python scripts at top
 5) Cron(Daily) to pull new data (get_new_heat_data.py) (do not run this often or you might get banned)
 6) to analyze karts, run ./analyze_karts.py; **./analyze_league_karts.py**
