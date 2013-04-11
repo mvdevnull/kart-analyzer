@@ -3,22 +3,18 @@
 import re
 import MySQLdb
 import sys
+from config import database
 #import time
 
 #User Configuration and Assumptions here
-
-DATABASE_HOST = "localhost"
-DATABASE_USER = "spk"
-DATABASE_NAME = "spk"
-DATABASE_PASSWD = "spk"
-DATABASE_PORT = 3306
 
 min_date = "2013-03-01 00:00:00"
 weight_factor = .1
 heat_diff_max = 4
 
 ###################
-db=MySQLdb.connect(host=DATABASE_HOST,user=DATABASE_USER,passwd=DATABASE_PASSWD, db=DATABASE_NAME, port=int(DATABASE_PORT))
+
+db=MySQLdb.connect(host=database['host'],user=database['user'],passwd=database['pass'], db=database['name'], port=database['port'])
 cursor = db.cursor()
 cursor.execute("""SELECT min(heat_num) as heat_num from heat where heat_datetime >= '%s'""" %\
 (min_date))
@@ -75,11 +71,21 @@ for row in results:
     kart1diff = karttime_cur - karttime_last
     kart1diff_neg = -kart1diff
     print "+RAW [", row[3], "]- kart", kartnum_last, "is", kart1diff, "[+faster/-slower] than kart", kartnum_cur
-    cursor.execute ("""UPDATE spk.kart SET kart.%s = '%s' WHERE kart.kart_number = %s""" %\
-    (kartnum_last, kart1diff, kartnum_cur))
+    try:
+      cursor.execute ("""UPDATE spk.kart SET kart.%s = '%s' WHERE kart.kart_number = %s""" %\
+      (kartnum_last, kart1diff, kartnum_cur))
+    except:
+      query = "ALTER TABLE spk.kart ADD kart.%s text" % (kartnum_last)
+      cursor.execute (query)
+      cursor.execute ("""UPDATE spk.kart SET kart.%s = '%s' WHERE kart.kart_number = %s""" %\
+      (kartnum_last, kart1diff, kartnum_cur))
     db.commit()
-    cursor.execute ("""UPDATE spk.kart SET kart.%s = '%s' WHERE kart.kart_number = %s""" %\
-    (kartnum_cur, kart1diff_neg, kartnum_last))
+    try:
+      cursor.execute ("""UPDATE spk.kart SET kart.%s = '%s' WHERE kart.kart_number = %s""" %\
+      (kartnum_cur, kart1diff_neg, kartnum_last))
+    except:
+      query = "ALTER TABLE spk.kart ADD kart.%s text" % (kartnum_cur)
+      cursor.execute (query)      
     db.commit()
    else:
     pass
@@ -136,7 +142,7 @@ for row in results:
     else:
      #Data already exists, so carefully smooth in the factor by some factor
      newdiffsmooth = float(str(newdiff)) * weight_factor
-   weight_factor_neg = 1-weight_factor
+     weight_factor_neg = 1-weight_factor
      olddiffsmooth = float(str(data_exists)) * weight_factor_neg
      newdiffsmooth2 = float(str(newdiffsmooth)) + float(str(olddiffsmooth))
      newdiffsmooth2 = round(newdiffsmooth2,3)

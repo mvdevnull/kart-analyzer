@@ -5,16 +5,9 @@ import urllib2
 import re
 import MySQLdb
 import sys
+from config import database
 
-DATABASE_HOST = "localhost"
-DATABASE_USER = "spk"
-DATABASE_NAME = "spk"
-DATABASE_PASSWD = "spk"
-DATABASE_PORT = 3306
-
-
-
-db=MySQLdb.connect(host=DATABASE_HOST,user=DATABASE_USER,passwd=DATABASE_PASSWD, db=DATABASE_NAME, port=int(DATABASE_PORT))
+db=MySQLdb.connect(host=database['host'],user=database['user'],passwd=database['pass'], db=database['name'], port=database['port'])
 cursor = db.cursor()
 cursor.execute("""SELECT driver_name, driver_cust_id FROM driver""")
 results = cursor.fetchall()
