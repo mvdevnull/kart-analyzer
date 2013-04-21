@@ -1,14 +1,16 @@
 kart-analyzer
 =============
-
+Purpose:
 Python Tool to analyze kart and driver relative performance
+
+
 Prerequisites:
 1)Python
 2)Mysql
 3)Python Library - from bs4 import BeautifulSoup
 
 
-Instructions
+Instructions:
 
 1) Create mysql DB (db=spk , user=[youruser], pass=[yourpass])
 2) Create mysql DB structure (mysql -h mydatabasehost -u user -p passwd spk < mysql_db.sql)
