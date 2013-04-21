@@ -2,6 +2,10 @@ kart-analyzer
 =============
 
 Python Tool to analyze kart and driver relative performance
+Prerequisites:
+1)Python
+2)Mysql
+3)Python Library - from bs4 import BeautifulSoup
 
 
 Instructions
